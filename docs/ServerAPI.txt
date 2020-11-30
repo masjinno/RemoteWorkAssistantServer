@@ -1,0 +1,58 @@
+RemoteWorkAssistantServer API
+
+POST /api/v1/user
+	request:
+		{ "email": "email@example.com", "password": "password" }
+	response:
+		200 OK
+		409 Conflict: { "message": "E-mail address is conflicted." }
+
+PUT /api/v1/user/delete
+	request:
+		{ "email": "email@example.com", "password": "password" }
+	response
+		200 OK
+		403 Forbidden: { "message": "Authentication failure." }
+		404 NotFound:  { "message": "Not found e-mail address." }
+
+POST /api/v1/ipaddress
+	request:
+		{
+			"email": "email@example.com",
+			"password": "password",
+			"pcName": "MyDesktopPC",
+		}
+	response:
+		200 OK
+		403 Forbidden: { "message": "Authentication failure." }
+		404 NotFound:  { "message": "Not found e-mail address." }
+		409 Conflict:  { "message": "PC name is conflicted." }
+
+PUT /api/v1/ipaddress
+	request:
+		{
+			"email": "email@example.com",
+			"password": "password",
+			"pcName": "MyDesktopPC",
+			"ipAddress": "コマンド「ipconfig /all」の出力結果"
+		}
+	response:
+		200 OK
+		403 Forbidden
+		404 NotFound
+
+PUT /api/v1/ipaddress/get
+	request:
+		{
+			"email": "email@example.com",
+			"password": "password"
+		}
+	response:
+		{
+			"email": "email@example.com",
+			"info": [
+				{ "pcName": "MyDesktopPC", "ipAddress": "コマンド「ipconfig /all」の出力結果" },
+				{ "pcName": "MyNotePC", "ipAddress": "コマンド「ipconfig /all」の出力結果" }
+			]
+		}
+
