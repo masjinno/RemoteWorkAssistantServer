@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CA1018: 属性を AttributeUsageAttribute に設定します
+dotnet_diagnostic.CA1018.severity = suggestion

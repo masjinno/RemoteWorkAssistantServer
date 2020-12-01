@@ -1,13 +1,15 @@
 RemoteWorkAssistantServer API
 
 POST /api/v1/user
+	ユーザー登録
 	request:
 		{ "email": "email@example.com", "password": "password" }
 	response:
-		200 OK
+		201 Created
 		409 Conflict: { "message": "E-mail address is conflicted." }
 
 PUT /api/v1/user/delete
+	ユーザー削除
 	request:
 		{ "email": "email@example.com", "password": "password" }
 	response
@@ -15,7 +17,8 @@ PUT /api/v1/user/delete
 		403 Forbidden: { "message": "Authentication failure." }
 		404 NotFound:  { "message": "Not found e-mail address." }
 
-POST /api/v1/ipaddress
+POST /api/v1/pc
+	PC登録
 	request:
 		{
 			"email": "email@example.com",
@@ -23,12 +26,13 @@ POST /api/v1/ipaddress
 			"pcName": "MyDesktopPC",
 		}
 	response:
-		200 OK
+		201 Created
 		403 Forbidden: { "message": "Authentication failure." }
 		404 NotFound:  { "message": "Not found e-mail address." }
 		409 Conflict:  { "message": "PC name is conflicted." }
 
-PUT /api/v1/ipaddress
+PUT /api/v1/pc/ipaddress
+	IPアドレス登録
 	request:
 		{
 			"email": "email@example.com",
@@ -41,7 +45,8 @@ PUT /api/v1/ipaddress
 		403 Forbidden
 		404 NotFound
 
-PUT /api/v1/ipaddress/get
+PUT /api/v1/pc/ipaddress/get
+	IPアドレス取得
 	request:
 		{
 			"email": "email@example.com",
