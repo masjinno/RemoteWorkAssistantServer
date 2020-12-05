@@ -6,67 +6,82 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RemoteWorkAssisntantServer.Constants;
+using RemoteWorkAssisntantServer.Dto;
 using RemoteWorkAssisntantServer.Models;
 
 namespace RemoteWorkAssisntantServer.Controllers
 {
+    /// <summary>
+    /// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    /// </summary>
     [Route("api/v1/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly UserContext _context;
+        private readonly RemoteWorkAssistantContext _context;
 
-        public UserController(UserContext context)
+        public UserController(RemoteWorkAssistantContext context)
         {
-            _context = context;
+            this._context = context;
         }
 
-        // PUT: api/v1/user/delete
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// ユーザー情報を削除する
+        /// PUT: api/v1/user/delete
+        /// </summary>
+        /// <param name="userReq"></param>
+        /// <returns></returns>
         [HttpPut("delete")]
-        public async Task<IActionResult> DeleteUser(UserInfo userInfo)
+        public async Task<IActionResult> DeleteUser(UserReq userReq)
         {
-            var userData = await _context.UserInfos.FindAsync(userInfo.MailAddress);
-            _context.Entry(userInfo).State = EntityState.Deleted;
+            if (!this._context.Authenticate(userReq))
+            {
+                return BadRequest(new Error(Messages.AUTHENTICATION_ERROR));
+            }
 
-            try
+            UserInfo userInfo = userReq.ConvertToUserInfo();
+
+            UserInfo targetUserData = this._context.UserInfos
+                .Where(ui => ui.MailAddress.Equals(userInfo.MailAddress)).FirstOrDefault();
+            if (targetUserData == null)
             {
-                _context.Remove(userInfo);
+                return NotFound(new Error(Messages.EMAIL_CONFLICT));
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserInfoExists(userInfo.MailAddress))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            this._context.UserInfos.Remove(targetUserData);
+            await this._context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        // POST: api/v1/user
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// ユーザーを作成する。
+        /// POST: api/v1/user
+        /// </summary>
+        /// <param name="userReq"></param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult<UserInfo>> PostUser(UserInfo userInfo)
+        public async Task<IActionResult> PostUser(UserReq userReq)
         {
-            if (UserInfoExists(userInfo.MailAddress))
+            UserInfo userInfo = userReq.ConvertToUserInfo();
+
+            if (this._context.UserInfoExists(userInfo.MailAddress))
             {
                 return Conflict(new Error(Messages.EMAIL_CONFLICT));
             }
 
-            _context.UserInfos.Add(userInfo);
-            await _context.SaveChangesAsync();
+            this._context.UserInfos.Add(userInfo);
+            await this._context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUserInfo", new { mailAddress = userInfo.MailAddress }, userInfo);
+            return Ok();
         }
 
-        private bool UserInfoExists(string mailAddress)
+        // For Debug
+        // GET: api/user
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserInfo>>> GetUserInfos()
         {
-            return _context.UserInfos.Any(e => e.MailAddress.Equals(mailAddress));
+            return await _context.UserInfos.ToListAsync();
         }
     }
 }

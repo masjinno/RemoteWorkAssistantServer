@@ -7,9 +7,8 @@ namespace RemoteWorkAssisntantServer.Constants
 {
     /// <summary>
     /// Enumに文字列を付加するためのAttributeクラス
+    /// 参考：https://qiita.com/sugasaki/items/ea5eec093ad7934abd5c
     /// </summary>
-    // Satisfies rule: Attributes specify AttributeUsage.
-    // This attribute is valid for type-level targets.
     [AttributeUsage(AttributeTargets.Field)]
     public class StringValueAttribute : Attribute
     {

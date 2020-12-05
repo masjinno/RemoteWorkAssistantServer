@@ -5,29 +5,34 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RemoteWorkAssisntantServer.Constants;
+using RemoteWorkAssisntantServer.Dto;
 using RemoteWorkAssisntantServer.Models;
 
 namespace RemoteWorkAssisntantServer.Controllers
 {
+    /// <summary>
+    /// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    /// </summary>
     [Route("api/v1/[controller]")]
     [ApiController]
     public class PcController : ControllerBase
     {
-        private readonly PcContext _context;
+        private readonly RemoteWorkAssistantContext _context;
 
-        public PcController(PcContext context)
+        public PcController(RemoteWorkAssistantContext context)
         {
             _context = context;
         }
 
-        // GET: api/Pc
+        // GET: api/pc
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PcInfo>>> GetPcInfos()
         {
             return await _context.PcInfos.ToListAsync();
         }
 
-        // GET: api/Pc/5
+        // GET: api/pc/5
         [HttpGet("{id}")]
         public async Task<ActionResult<PcInfo>> GetPcInfo(long id)
         {
@@ -41,27 +46,28 @@ namespace RemoteWorkAssisntantServer.Controllers
             return pcInfo;
         }
 
-        // PUT: api/Pc/5
+        // PUT: api/pc/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPcInfo(long id, PcInfo pcInfo)
+        [HttpPut]
+        public async Task<IActionResult> PutPcInfo(PcPutReq pcPutReq)
         {
-            if (id != pcInfo.Id)
+            if (!this._context.Authenticate(pcPutReq))
             {
-                return BadRequest();
+                return BadRequest(new Error(Messages.AUTHENTICATION_ERROR));
             }
 
-            _context.Entry(pcInfo).State = EntityState.Modified;
+            PcInfo pcInfo = pcPutReq.ConvertToPcInfo();
+            this._context.Entry(pcInfo).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await this._context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PcInfoExists(id))
+                if (!this._context.PcInfoExists(pcInfo.Id))
                 {
-                    return NotFound();
+                    return NotFound(new Error(Messages.PC_NAME_NOT_FOUND));
                 }
                 else
                 {
@@ -72,36 +78,45 @@ namespace RemoteWorkAssisntantServer.Controllers
             return NoContent();
         }
 
-        // POST: api/Pc
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// POST: api/pc
+        /// </summary>
+        /// <param name="pcPostReq"></param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult<PcInfo>> PostPcInfo(PcInfo pcInfo)
+        public async Task<IActionResult> PostPcInfo(PcPostReq pcPostReq)
         {
-            _context.PcInfos.Add(pcInfo);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetPcInfo", new { id = pcInfo.Id }, pcInfo);
-        }
-
-        // DELETE: api/Pc/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePcInfo(long id)
-        {
-            var pcInfo = await _context.PcInfos.FindAsync(id);
-            if (pcInfo == null)
+            if (!this._context.Authenticate(pcPostReq))
             {
-                return NotFound();
+                return BadRequest(new Error(Messages.AUTHENTICATION_ERROR));
             }
 
-            _context.PcInfos.Remove(pcInfo);
-            await _context.SaveChangesAsync();
+            PcInfo pcInfo = pcPostReq.ConvertToPcInfo();
+            if (this._context.PcInfoExists(pcInfo.Id))
+            {
+                return Conflict(new Error(Messages.PC_NAME_CONFLICT));
+            }
 
-            return NoContent();
+            this._context.PcInfos.Add(pcInfo);
+            await this._context.SaveChangesAsync();
+
+            return Ok();
         }
 
-        private bool PcInfoExists(long id)
-        {
-            return _context.PcInfos.Any(e => e.Id == id);
-        }
+        //// DELETE: api/pc/5
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeletePcInfo(long id)
+        //{
+        //    var pcInfo = await _context.PcInfos.FindAsync(id);
+        //    if (pcInfo == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    _context.PcInfos.Remove(pcInfo);
+        //    await _context.SaveChangesAsync();
+
+        //    return NoContent();
+        //}
     }
 }

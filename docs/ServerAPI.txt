@@ -5,7 +5,7 @@ POST /api/v1/user
 	request:
 		{ "email": "email@example.com", "password": "password" }
 	response:
-		201 Created
+		200 OK
 		409 Conflict: { "message": "E-mail address is conflicted." }
 
 PUT /api/v1/user/delete
@@ -13,8 +13,8 @@ PUT /api/v1/user/delete
 	request:
 		{ "email": "email@example.com", "password": "password" }
 	response
-		200 OK
-		403 Forbidden: { "message": "Authentication failure." }
+		204 NoContent
+		403 Forbidden: { "message": "Authentication error." }
 		404 NotFound:  { "message": "Not found e-mail address." }
 
 POST /api/v1/pc
@@ -26,9 +26,9 @@ POST /api/v1/pc
 			"pcName": "MyDesktopPC",
 		}
 	response:
-		201 Created
+		200 OK
 		403 Forbidden: { "message": "Authentication failure." }
-		404 NotFound:  { "message": "Not found e-mail address." }
+		404 NotFound:  { "message": "Not found PC name." }
 		409 Conflict:  { "message": "PC name is conflicted." }
 
 PUT /api/v1/pc/ipaddress
@@ -42,7 +42,7 @@ PUT /api/v1/pc/ipaddress
 		}
 	response:
 		200 OK
-		403 Forbidden
+		403 Forbidden: { "message": "Authentication failure." }
 		404 NotFound
 
 PUT /api/v1/pc/ipaddress/get

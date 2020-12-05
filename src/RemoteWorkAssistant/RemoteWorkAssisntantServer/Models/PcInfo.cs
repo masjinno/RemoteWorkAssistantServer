@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,8 +8,30 @@ namespace RemoteWorkAssisntantServer.Models
 {
     public class PcInfo
     {
-        public long Id { get; set; }
+        /// <summary>
+        /// 形式的に用意した主キー。
+        /// {MailAddress}-{PcName}
+        /// </summary>
+        [Key]
+        public string Id { get; set; }
+
+        /// <summary>
+        /// メールアドレス。
+        /// ユーザー判別。
+        /// </summary>
+        public string MailAddress { get; set; }
+
+        /// <summary>
+        /// PC名称。
+        /// ユーザー単位でユニーク。
+        /// </summary>
         public string PcName { get; set; }
+
+        /// <summary>
+        /// IPアドレス情報。
+        /// Windowsコマンド`ipconfig /all`で出力された値を保持する想定。
+        /// 格納する際に該当コマンドで出力されたものか判断していない。
+        /// </summary>
         public string IpAddress { get; set; }
     }
 }
