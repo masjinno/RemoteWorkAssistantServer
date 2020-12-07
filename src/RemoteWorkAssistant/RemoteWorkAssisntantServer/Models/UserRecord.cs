@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RemoteWorkAssisntantServer.Models
 {
-    public class UserInfo
+    public class UserRecord
     {
         /// <summary>
         /// メールアドレス。主キー。

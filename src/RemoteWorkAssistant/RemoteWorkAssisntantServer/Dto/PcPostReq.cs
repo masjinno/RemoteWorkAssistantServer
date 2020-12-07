@@ -1,16 +1,16 @@
-﻿using Newtonsoft.Json;
-using RemoteWorkAssisntantServer.Models;
+﻿using RemoteWorkAssisntantServer.Models;
+using System.Text.Json.Serialization;
 
 namespace RemoteWorkAssisntantServer.Dto
 {
     public class PcPostReq : UserAuthorization
     {
-        [JsonProperty(PropertyName = "pcName")]
+        [JsonPropertyName("pcName")]
         public string PcName { get; set; }
 
-        public PcInfo ConvertToPcInfo()
+        public PcRecord ConvertToPcRecord()
         {
-            return new PcInfo
+            return new PcRecord
             {
                 Id = RemoteWorkAssistantContext.GeneratePcInfoId(
                     this.MailAddress, this.PcName),

@@ -3,22 +3,23 @@ using System.Text.Json.Serialization;
 
 namespace RemoteWorkAssisntantServer.Dto
 {
-    public class PcPutReq : UserAuthorization
+    public class PcIpAddressPutReq : UserAuthorization
     {
-        [JsonPropertyName("prePcName")]
-        public string PrePcName { get; set; }
+        [JsonPropertyName("pcName")]
+        public string PcName { get; set; }
 
-        [JsonPropertyName("newPcName")]
-        public string NewPcName { get; set; }
+        [JsonPropertyName("ipAddress")]
+        public string IpAddress { get; set; }
 
         public PcRecord ConvertToPcRecord()
         {
             return new PcRecord
             {
                 Id = RemoteWorkAssistantContext.GeneratePcInfoId(
-                    this.MailAddress, this.PrePcName),
+                    this.MailAddress, this.PcName),
                 MailAddress = this.MailAddress,
-                PcName = this.NewPcName
+                PcName = this.PcName,
+                IpAddress = this.IpAddress
             };
         }
     }

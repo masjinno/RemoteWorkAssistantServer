@@ -1,18 +1,13 @@
-﻿using Newtonsoft.Json;
-using RemoteWorkAssisntantServer.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace RemoteWorkAssisntantServer.Dto
 {
-    public abstract class UserAuthorization
+    public class UserAuthorization
     {
-        [JsonProperty(PropertyName = "mailAddress", Required = Required.Always)]
+        [JsonPropertyName("email")]
         public string MailAddress { get; set; }
 
-        [JsonProperty(PropertyName = "password", Required = Required.Always)]
+        [JsonPropertyName("password")]
         public string Password { get; set; }
     }
 }

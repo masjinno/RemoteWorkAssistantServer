@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RemoteWorkAssisntantServer.Models
 {
-    public class PcInfo
+    public class PcRecord
     {
         /// <summary>
         /// 形式的に用意した主キー。

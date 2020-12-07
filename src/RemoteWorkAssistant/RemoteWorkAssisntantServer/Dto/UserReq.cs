@@ -8,9 +8,9 @@ namespace RemoteWorkAssisntantServer.Dto
 {
     public class UserReq : UserAuthorization
     {
-        public UserInfo ConvertToUserInfo()
+        public UserRecord ConvertToUserRecord()
         {
-            return new UserInfo
+            return new UserRecord
             {
                 MailAddress = this.MailAddress,
                 Password = this.Password

@@ -15,17 +15,17 @@ namespace RemoteWorkAssisntantServer.Models
         {
         }
 
-        public DbSet<UserInfo> UserInfos { get; set; }
-        public DbSet<PcInfo> PcInfos { get; set; }
+        public DbSet<UserRecord> UserTable { get; set; }
+        public DbSet<PcRecord> PcTable { get; set; }
 
-        public bool UserInfoExists(string mailAddress)
+        public bool UserRecordExists(string mailAddress)
         {
-            return this.UserInfos.Any(e => e.MailAddress.Equals(mailAddress));
+            return this.UserTable.Any(e => e.MailAddress.Equals(mailAddress));
         }
 
-        public bool PcInfoExists(string id)
+        public bool PcRecordExists(string id)
         {
-            return this.PcInfos.Any(e => e.Id.Equals(id));
+            return this.PcTable.Any(e => e.Id.Equals(id));
         }
 
         public static string GeneratePcInfoId(string mailAddress, string pcName)
@@ -37,7 +37,7 @@ namespace RemoteWorkAssisntantServer.Models
 
         public bool Authenticate(UserAuthorization userData)
         {
-            return this.UserInfos.Any(ui => ui.MailAddress.Equals(userData.MailAddress) && ui.Password.Equals(userData.Password));
+            return this.UserTable.Any(ui => ui.MailAddress.Equals(userData.MailAddress) && ui.Password.Equals(userData.Password));
         }
     }
 }

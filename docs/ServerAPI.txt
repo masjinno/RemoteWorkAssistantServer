@@ -13,7 +13,7 @@ PUT /api/v1/user/delete
 	request:
 		{ "email": "email@example.com", "password": "password" }
 	response
-		204 NoContent
+		200 OK
 		403 Forbidden: { "message": "Authentication error." }
 		404 NotFound:  { "message": "Not found e-mail address." }
 
@@ -24,6 +24,21 @@ POST /api/v1/pc
 			"email": "email@example.com",
 			"password": "password",
 			"pcName": "MyDesktopPC",
+		}
+	response:
+		200 OK
+		403 Forbidden: { "message": "Authentication failure." }
+		404 NotFound:  { "message": "Not found PC name." }
+		409 Conflict:  { "message": "PC name is conflicted." }
+
+PUT /api/v1/pc
+	PC名称変更
+	request:
+		{
+			"email": "email@example.com",
+			"password": "password",
+			"prePcName": "MyDesktopPC",
+			"newPcName": "RenamedMyDesktopPC",
 		}
 	response:
 		200 OK
@@ -55,7 +70,7 @@ PUT /api/v1/pc/ipaddress/get
 	response:
 		{
 			"email": "email@example.com",
-			"info": [
+			"pc": [
 				{ "pcName": "MyDesktopPC", "ipAddress": "コマンド「ipconfig /all」の出力結果" },
 				{ "pcName": "MyNotePC", "ipAddress": "コマンド「ipconfig /all」の出力結果" }
 			]

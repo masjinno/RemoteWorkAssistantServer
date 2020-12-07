@@ -39,19 +39,19 @@ namespace RemoteWorkAssisntantServer.Controllers
                 return BadRequest(new Error(Messages.AUTHENTICATION_ERROR));
             }
 
-            UserInfo userInfo = userReq.ConvertToUserInfo();
+            UserRecord userRecord = userReq.ConvertToUserRecord();
 
-            UserInfo targetUserData = this._context.UserInfos
-                .Where(ui => ui.MailAddress.Equals(userInfo.MailAddress)).FirstOrDefault();
+            UserRecord targetUserData = this._context.UserTable
+                .Where(ui => ui.MailAddress.Equals(userRecord.MailAddress)).FirstOrDefault();
             if (targetUserData == null)
             {
                 return NotFound(new Error(Messages.EMAIL_CONFLICT));
             }
 
-            this._context.UserInfos.Remove(targetUserData);
+            this._context.UserTable.Remove(targetUserData);
             await this._context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
 
         /// <summary>
@@ -63,14 +63,14 @@ namespace RemoteWorkAssisntantServer.Controllers
         [HttpPost]
         public async Task<IActionResult> PostUser(UserReq userReq)
         {
-            UserInfo userInfo = userReq.ConvertToUserInfo();
+            UserRecord userRecord = userReq.ConvertToUserRecord();
 
-            if (this._context.UserInfoExists(userInfo.MailAddress))
+            if (this._context.UserRecordExists(userRecord.MailAddress))
             {
                 return Conflict(new Error(Messages.EMAIL_CONFLICT));
             }
 
-            this._context.UserInfos.Add(userInfo);
+            this._context.UserTable.Add(userRecord);
             await this._context.SaveChangesAsync();
 
             return Ok();
@@ -78,10 +78,10 @@ namespace RemoteWorkAssisntantServer.Controllers
 
         // For Debug
         // GET: api/user
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserInfo>>> GetUserInfos()
+        [HttpGet("debug")]
+        public async Task<ActionResult<IEnumerable<UserRecord>>> GetUserInfos()
         {
-            return await _context.UserInfos.ToListAsync();
+            return await _context.UserTable.ToListAsync();
         }
     }
 }
