@@ -3,18 +3,6 @@
     "apis1": {
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.ApiManagement/service/RemoteWorkAssisntantServerapi/apis/RemoteWorkAssisntantServer",
       "type": "apis.azure"
-    },
-    "secrets1": {
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.KeyVault/vaults/RWAServerAzureKeyVault",
-      "type": "secrets.keyVault",
-      "connectionId": "VaultUri",
-      "secretStore": "AzureAppSettings"
-    },
-    "mssql1": {
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/remoteworkassistantserverdbserver/databases/RemoteWorkAssistantServer_db",
-      "type": "mssql.azure",
-      "connectionId": "VaultUri",
-      "secretStore": "AzureKeyVault"
     }
   }
 }
